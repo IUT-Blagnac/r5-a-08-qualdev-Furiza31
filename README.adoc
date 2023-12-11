@@ -1,9 +1,8 @@
 = R5.A.08 -- Dépôt pour les TPs
-Hugo Wendjaneh
 :icons: font
 :MoSCoW: https://fr.wikipedia.org/wiki/M%C3%A9thode_MoSCoW[MoSCoW]
 
-Ce dépôt concerne les rendus de mailto:A_changer@etu.univ-tlse2.fr[Jonh Doe].
+Ce dépôt concerne les rendus de mailto:hugo.wendjaneh@gmail.com[Jonh Doe].
 
 == TP1
 
