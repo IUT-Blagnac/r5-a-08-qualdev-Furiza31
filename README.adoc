@@ -129,3 +129,204 @@ Scenario Outline: Sunday isn't Friday # hellocucumber/is_it_friday_yet.feature:1
 [INFO] Finished at: 2023-12-11T11:01:58+01:00
 [INFO] ------------------------------------------------------------------------
 ```
+
+== TP2
+
+.Code cocktail.feature
+```gherkin
+Feature: Cocktail Ordering
+
+    As Romeo, I want to offer a drink to Juliette so that we can discuss together.
+
+    Scenario Outline: Creating an empty order
+        Given <from> who wants to buy a drink
+        When an order is declared for <to>
+        Then there is <nbCocktails> cocktails in the order
+
+        Examples:
+            | from  | to       | nbCocktails |
+            | Romeo | Juliette | 0           |
+            | Tom   | Jerry    | 0           |
+
+    Scenario Outline: Sending a message with an order
+        Given <from> who wants to buy a drink
+        When an order is declared for <to>
+        And a message saying "<message>" is added
+        Then the ticket must say "<expected>"
+
+        Examples:
+            | from  | to       | message     | expected                            |
+            | Romeo | Juliette | Wanna chat? | From Romeo to Juliette: Wanna chat? |
+            | Tom   | Jerry    | Hei!        | From Tom to Jerry: Hei!             |
+```
+
+.Code Cocktail.java
+```java
+package hellocucumber;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.List;
+
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
+public class Cocktail {
+
+    private Order order;
+
+    @Given("^(.*) who wants to buy a drink$")
+    public void who_wants_to_buy_a_drink(String pfFrom) {
+        this.order = new Order();
+        this.order.declareOwner(pfFrom);
+    }
+
+    @When("^an order is declared for (.*)$")
+    public void an_order_is_declared_for(String pfTo) {
+        this.order.declareTarget(pfTo);
+    }
+
+    @Then("^there is (\\d+) cocktails? in the order$")
+    public void there_is_cocktails_in_the_order(int pfNbCocktails) {
+        List<String> cocktails = this.order.getCocktails();
+        assertEquals(pfNbCocktails, cocktails.size());
+    }
+
+    @And("^a message saying \"(.*)\" is added$")
+    public void a_message_saying_is_added(String pfMessage) {
+        this.order.addMessage(pfMessage);
+    }
+
+    @Then("^the ticket must say \"(.*)\"$")
+    public void the_ticket_must_say(String pfExpected) {
+        String ticket = this.order.getTicket();
+        assertEquals(pfExpected, ticket);
+    }
+
+}
+```
+
+.Code Order.java
+```java
+package hellocucumber;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Order {
+
+    private String owner;
+    private String target;
+    private String message;
+    private List<String> cocktails = new ArrayList<>();
+
+    public void declareTarget(String pfTarget) {
+        this.target = pfTarget;
+    }
+
+    public void declareOwner(String pfOwner) {
+        this.owner = pfOwner;
+    }
+
+    public List<String> getCocktails() {
+        return this.cocktails;
+    }
+
+    public void addMessage(String pfMessage) {
+        this.message = pfMessage;
+    }
+
+    public String getTicket() {
+        return "From " + this.owner + " to " + this.target + ": " + this.message;
+    }
+}
+```
+
+.Résultat mvn test
+```bash
+11:33:44 furiza@mirabelle /home/furiza/school/BehaviorDrivenDevelopment/tp2/r5-a-08-qualdev-Furiza31/hellocucumber [0] (main)
+-> mvn test
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< hellocucumber:hellocucumber >---------------------
+[INFO] Building hellocucumber 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ hellocucumber ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/furiza/school/BehaviorDrivenDevelopment/tp2/r5-a-08-qualdev-Furiza31/hellocucumber/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.11.0:compile (default-compile) @ hellocucumber ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ hellocucumber ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 3 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.11.0:testCompile (default-testCompile) @ hellocucumber ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:3.2.2:test (default-test) @ hellocucumber ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running hellocucumber.RunCucumberTest
+
+Scenario Outline: Creating an empty order # hellocucumber/cocktail.feature:12
+  Given Romeo who wants to buy a drink    # hellocucumber.Cocktail.who_wants_to_buy_a_drink(java.lang.String)
+  When an order is declared for Juliette  # hellocucumber.Cocktail.an_order_is_declared_for(java.lang.String)
+  Then there is 0 cocktails in the order  # hellocucumber.Cocktail.there_is_cocktails_in_the_order(int)
+
+Scenario Outline: Creating an empty order # hellocucumber/cocktail.feature:13
+  Given Tom who wants to buy a drink      # hellocucumber.Cocktail.who_wants_to_buy_a_drink(java.lang.String)
+  When an order is declared for Jerry     # hellocucumber.Cocktail.an_order_is_declared_for(java.lang.String)
+  Then there is 0 cocktails in the order  # hellocucumber.Cocktail.there_is_cocktails_in_the_order(int)
+
+Scenario Outline: Sending a message with an order                # hellocucumber/cocktail.feature:23
+  Given Romeo who wants to buy a drink                           # hellocucumber.Cocktail.who_wants_to_buy_a_drink(java.lang.String)
+  When an order is declared for Juliette                         # hellocucumber.Cocktail.an_order_is_declared_for(java.lang.String)
+  And a message saying "Wanna chat?" is added                    # hellocucumber.Cocktail.a_message_saying_is_added(java.lang.String)
+  Then the ticket must say "From Romeo to Juliette: Wanna chat?" # hellocucumber.Cocktail.the_ticket_must_say(java.lang.String)
+
+Scenario Outline: Sending a message with an order    # hellocucumber/cocktail.feature:24
+  Given Tom who wants to buy a drink                 # hellocucumber.Cocktail.who_wants_to_buy_a_drink(java.lang.String)
+  When an order is declared for Jerry                # hellocucumber.Cocktail.an_order_is_declared_for(java.lang.String)
+  And a message saying "Hei!" is added               # hellocucumber.Cocktail.a_message_saying_is_added(java.lang.String)
+  Then the ticket must say "From Tom to Jerry: Hei!" # hellocucumber.Cocktail.the_ticket_must_say(java.lang.String)
+
+Scenario: The example                       # hellocucumber/example.feature:3
+  Given an example scenario                 # hellocucumber.StepDefinitions.anExampleScenario()
+  When all step definitions are implemented # hellocucumber.StepDefinitions.allStepDefinitionsAreImplemented()
+  Then the scenario passes                  # hellocucumber.StepDefinitions.theScenarioPasses()
+
+Scenario Outline: Sunday isn't Friday # hellocucumber/is_it_friday_yet.feature:13
+  Given today is "Friday"             # hellocucumber.IsItFriday.today_is_sunday(java.lang.String)
+  When I ask whether it's Friday yet  # hellocucumber.IsItFriday.i_ask_whether_it_s_friday_yet()
+  Then I should be told "TGIF"        # hellocucumber.IsItFriday.i_should_be_told(java.lang.String)
+
+Scenario Outline: Sunday isn't Friday # hellocucumber/is_it_friday_yet.feature:14
+  Given today is "Sunday"             # hellocucumber.IsItFriday.today_is_sunday(java.lang.String)
+  When I ask whether it's Friday yet  # hellocucumber.IsItFriday.i_ask_whether_it_s_friday_yet()
+  Then I should be told "Nope"        # hellocucumber.IsItFriday.i_should_be_told(java.lang.String)
+
+Scenario Outline: Sunday isn't Friday # hellocucumber/is_it_friday_yet.feature:15
+  Given today is "anything else!"     # hellocucumber.IsItFriday.today_is_sunday(java.lang.String)
+  When I ask whether it's Friday yet  # hellocucumber.IsItFriday.i_ask_whether_it_s_friday_yet()
+  Then I should be told "Nope"        # hellocucumber.IsItFriday.i_should_be_told(java.lang.String)
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.203 s -- in hellocucumber.RunCucumberTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.753 s
+[INFO] Finished at: 2023-12-14T11:33:47+01:00
+[INFO] ------------------------------------------------------------------------
+```
