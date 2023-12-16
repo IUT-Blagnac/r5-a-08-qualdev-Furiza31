@@ -484,5 +484,4 @@ reporter.generate(options);
 ```bash
 npm run report
 ```
-
-.Report HTML (./ObjectToCSV/reports/reports.html)
+Report will be located in: ./ObjectToCSV/reports/reports.html
