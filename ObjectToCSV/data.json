@@ -1,0 +1,13 @@
+{
+    "name": "John",
+    "age": 30,
+    "city": "New York",
+    "adress": {
+        "street": "5th Avenue",
+        "number": 123,
+        "info": {
+            "floor": 5,
+            "apartment": 12
+        }
+    }
+}

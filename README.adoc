@@ -330,3 +330,125 @@ Scenario Outline: Sunday isn't Friday # hellocucumber/is_it_friday_yet.feature:1
 [INFO] Finished at: 2023-12-14T11:33:47+01:00
 [INFO] ------------------------------------------------------------------------
 ```
+
+== TP3
+
+.Code ObjectToCSV.feature
+```gherkin
+Feature: Object to CSV
+
+    Convert an Object to a CSV string
+
+    Scenario: Convert an Object to a CSV string
+        Given I have an Object
+        When I convert the Object to a CSV string
+        Then I should get a CSV string
+```
+
+.Code ObjectToCSV.js
+```javascript
+const assert = require('assert');
+const { Given, When, Then } = require('@cucumber/cucumber');
+const { getAll, convertToCSV } = require('../../ObjectToCSV');
+
+Given('I have an Object', function () {
+    this.object = {
+        name: 'John',
+        age: 30,
+        city: 'New York',
+        adress: {
+            street: '5th Avenue',
+            number: 123
+        }
+    };
+});
+
+When('I convert the Object to a CSV string', function () {
+    this.csv = convertToCSV(getAll({...this.object}));
+});
+
+Then('I should get a CSV string', function () {
+    assert.equal(this.csv, "name,age,city,street,number\nJohn,30,New York,5th Avenue,123\n");
+});
+```
+
+.Code ObjectToCSV.js
+```javascript
+function getAll(...objects) {
+    const all = {};
+    let rep = {};
+    let index = 0;
+
+    function init(n, key) {
+        all[key] = [];
+        for (let i = 0; i < n; i++) {
+            all[key].push('null');
+        }
+    }
+
+    function traverse(object, parent = '') {
+        for (const key in object) {
+            rep[key] === undefined ? (rep[key] = 0) : rep[key]++;
+            const repKey = key + (rep[key] > 0 ? `_${parent}` : '');
+            const value = object[key];
+            if (typeof value === 'object') {
+                traverse(value, key);
+            } else {
+                if (all[repKey]) {
+                    all[repKey][index] = value;
+                } else {
+                    init(objects.length, repKey);
+                    all[repKey][index] = value;
+                }
+            }
+        }
+    }
+
+    for (const object of objects) {
+        rep = {};
+        traverse(object);
+        index++;
+    }
+
+    return all;
+}
+
+function convertToCSV(data) {
+    let csv = '';
+    for (const key in data) {
+        csv += `${key},`;
+    }
+    csv = csv.slice(0, -1);
+    csv += '\n';
+    const max = Math.max(...Object.values(data).map((v) => v.length));
+    for (let i = 0; i < max; i++) {
+        for (const key in data) {
+            csv += `${data[key][i] instanceof Array ? data[key][i] : data[key][i].toString()},`;
+        }
+        csv = csv.slice(0, -1);
+        csv += '\n';
+    }
+    return csv;
+}
+
+module.exports = {
+    getAll,
+    convertToCSV,
+}
+```
+
+.Résultat npm run test
+```bash
+15:06:04 furiza@mirabelle /home/furiza/school/BehaviorDrivenDevelopment/tp3/r5-a-08-qualdev-Furiza31/ObjectToCSV [0] (main)
+-> npm run test
+
+> objecttocsv@1.0.0 test
+> cucumber-js
+
+This Node.js version (v21.4.0) has not been tested with this version of Cucumber; it should work normally, but please raise an issue if you see anything unexpected.
+...
+
+1 scenario (1 passed)
+3 steps (3 passed)
+0m00.012s (executing steps: 0m00.001s)
+```
