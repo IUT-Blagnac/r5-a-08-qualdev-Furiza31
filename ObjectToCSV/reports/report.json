@@ -1,0 +1,63 @@
+[
+  {
+    "description": "    Convert an Object to a CSV string",
+    "elements": [
+      {
+        "description": "",
+        "id": "object-to-csv;convert-an-object-to-a-csv-string",
+        "keyword": "Scenario",
+        "line": 5,
+        "name": "Convert an Object to a CSV string",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 6,
+            "name": "I have an Object",
+            "match": {
+              "location": "features/support/ObjectToCSV.js:5"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 409198
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 7,
+            "name": "I convert the Object to a CSV string",
+            "match": {
+              "location": "features/support/ObjectToCSV.js:17"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 368506
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 8,
+            "name": "I should get a CSV string",
+            "match": {
+              "location": "features/support/ObjectToCSV.js:21"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 266788
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "object-to-csv",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Object to CSV",
+    "tags": [],
+    "uri": "features/ObjectToCSV.feature"
+  }
+]
