@@ -1,0 +1,23 @@
+{
+  "name": "objecttocsv",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "start": "node index.js",
+    "report:json": "cucumber-js --format json:./reports/report.json",
+    "report:html": "node ./report.js",
+    "report": "npm run report:json && npm run report:html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.0.1",
+    "cucumber-html-reporter": "^7.1.1"
+  }
+}
